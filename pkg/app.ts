@@ -28,6 +28,8 @@ switch (config.schema.get("rdb.driver")) {
 
 switch (config.schema.get("store.driver")) {
   case "aws":
+  case "oss":
+  case "storeio":
   case "minio":
     await S3.connect()
     break
