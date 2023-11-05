@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "lib": ["ESNext"],
+    "module": "ESNext",
+    "target": "ES2020",
+    "moduleResolution": "node",
+    "moduleDetection": "force",
+    "preserveSymlinks": true,
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "noEmit": true,
+    "strict": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "types": [
+      "bun-types"
+    ],
+    "paths": {
+      "@pkg/*": ["./pkg/*"],
+      "@pkg/json": ["./package.json"],
+      "@auth/*": ["./pkg/auth/*"],
+      "@dbs/*": ["./pkg/dbs/*"],
+      "@stores/*": ["./pkg/stores/*"],
+      "@utils/*": ["./pkg/utils/*"],
+      "@modules/*": ["./modules/*"]
+    }  
+  },
+  "include": [
+    "pkg/**/*",
+    "modules/**/*"
+  ]
+}

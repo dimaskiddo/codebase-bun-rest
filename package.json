@@ -1,0 +1,57 @@
+{
+  "name": "codebase-bun-rest",
+  "title": "Codebase Bun REST",
+  "description": "Example Codebase Bun REST",
+  "version": "1.0.0",
+  "author": "Dimas Restu Hidayanto",
+  "license": "ISC OR GPL-3.0",
+  "module": "./pkg/app.ts",
+  "type": "module",
+  "scripts": {
+    "start": "bun run --smol ./pkg/app.ts",
+    "start:dev": "bun run --smol --watch ./pkg/app.ts",
+    "build": "bun run build:clean && bun build --smol --compile --target=bun --outfile=${SERVICE_NAME:-\"codebase-bun-rest\"} ./pkg/app.ts",
+    "build:minify": "bun run build:clean && bun build --smol --minify --compile --target=bun --outfile=${SERVICE_NAME:-\"codebase-bun-rest\"} ./pkg/app.ts",
+    "build:clean": "rm -f ${SERVICE_NAME:-\"codebase-bun-rest\"}"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.1",
+    "@types/convict": "^6.1.4",
+    "@types/convict-format-with-validator": "^6.0.3",
+    "@types/cookie-parser": "^1.4.5",
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.18",
+    "@types/express-useragent": "^1.0.3",
+    "@types/helmet": "^4.0.0",
+    "@types/jsonwebtoken": "^9.0.3",
+    "@types/minio": "^7.1.1",
+    "@types/moment-timezone": "^0.5.30",
+    "@types/multer": "^1.4.8",
+    "@types/node": "^20.8.3",
+    "@types/stack-trace": "^0.0.32",
+    "@types/validate.js": "^0.11.0",
+    "@types/winston": "^2.4.4",
+    "bun-types": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "convict": "^6.2.4",
+    "convict-format-with-validator": "^6.2.0",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-useragent": "^1.0.15",
+    "helmet": "^7.0.0",
+    "jsonwebtoken": "9.0.2",
+    "minio": "^7.1.3",
+    "moment-timezone": "^0.5.43",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.6.3",
+    "stack-trace": "0.0.10",
+    "validate.js": "^0.13.1",
+    "winston": "^2.4.7"
+  }
+}
