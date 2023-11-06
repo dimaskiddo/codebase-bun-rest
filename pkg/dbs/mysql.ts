@@ -100,7 +100,7 @@ export async function close() {
     try {
       let status: boolean = await new Promise((resolve, reject) => {
         client.end((err) => {
-          if (err) reject(false)
+          if (err) reject(err)
         })
         resolve(true)
       })
