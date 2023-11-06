@@ -13,7 +13,7 @@ export async function connect() {
     switch (config.schema.get("store.driver")) {
       case "aws":
         client = new minio.Client({
-          endPoint: "s3.amazonaws.com",
+          endPoint: config.schema.get("store.endpoint") || "s3." + config.schema.get("store.region") + ".amazonaws.com",
           accessKey: config.schema.get("store.accesskey"),
           secretKey: config.schema.get("store.secretkey"),
           region: config.schema.get("store.region"),
@@ -25,7 +25,7 @@ export async function connect() {
 
       case "oss":
         client = new minio.Client({
-          endPoint: config.schema.get("store.endpoint"),
+          endPoint: config.schema.get("store.endpoint") || "oss-" + config.schema.get("store.region") + ".aliyuncs.com",
           accessKey: config.schema.get("store.accesskey"),
           secretKey: config.schema.get("store.secretkey"),
           region: config.schema.get("store.region"),
