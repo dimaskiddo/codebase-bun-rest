@@ -98,9 +98,9 @@ export async function close() {
 
   if (!validate.isEmpty(client)) {
     try {
-      let status: boolean = await new Promise((resolve) => {
+      let status: boolean = await new Promise((resolve, reject) => {
         client.end((err) => {
-          if (err) resolve(false)
+          if (err) reject(false)
         })
         resolve(true)
       })
