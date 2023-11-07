@@ -1,5 +1,6 @@
 import express, { Request, Response, NextFunction } from "express"
 
+import cors from "cors"
 import helmet from "helmet"
 import cookieparser from "cookie-parser"
 import expressua from "express-useragent"
@@ -13,6 +14,7 @@ import * as string from "@utils/string"
 import * as response from "@utils/response"
 
 import * as mysql from "@dbs/mysql"
+import * as redis from "@dbs/redis"
 
 import * as mailer from "@mail/mailer"
 
@@ -29,6 +31,10 @@ switch (config.schema.get("rdb.driver")) {
     break
 }
 
+if (validate.isEmpty(config.schema.get("redis.host"))) {
+  await redis.connect()
+}
+
 switch (config.schema.get("store.driver")) {
   case "aws":
   case "oss":
@@ -42,6 +48,11 @@ if (validate.isEmpty(config.schema.get("mail.service"))) {
   await mailer.connect()
 }
 
+app.use(cors({
+  origin: config.schema.get("server.cors.origins"),
+  methods: config.schema.get("server.cors.methods"),
+  allowedHeaders: config.schema.get("server.cors.headers")
+}))
 app.use(helmet())
 app.use(cookieparser())
 app.use(multer.cache.any())
@@ -52,10 +63,6 @@ app.use(express.urlencoded({
 }))
 app.use(expressua.express())
 app.use((req: Request, res: Response, next: NextFunction) => {
-  res.header("Access-Control-Allow-Origin", config.schema.get('server.cors.origins'))
-  res.header("Access-Control-Allow-Methods", config.schema.get('server.cors.methods'))
-  res.header("Access-Control-Allow-Headers", config.schema.get('server.cors.headers'))
-
   if (req.url !== "/favicon.ico") {
     const logData = {
       ip: req.headers['x-forwarded-for']?.toString().split(',')[0] || req.ip,
@@ -113,6 +120,10 @@ async function serverShutdown() {
     case "mariadb":
       await mysql.close()
       break
+  }
+
+  if (validate.isEmpty(config.schema.get("redis.host"))) {
+    await redis.close()
   }
   
   log.info(ctx, "Server Shutdown Gracefully")

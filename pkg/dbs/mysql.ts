@@ -21,10 +21,7 @@ export async function connect() {
     })
 
     if (!await ping()) {
-      await close()
-
       log.error(ctx, "Failed to Connect MySQL Database")
-      process.exit(1)
     }
   }
 }

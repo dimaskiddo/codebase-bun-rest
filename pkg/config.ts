@@ -141,7 +141,7 @@ export const schema = convict({
     host: {
       doc: "Relational Database Host",
       format: String,
-      default: "127.0.0.1",
+      default: "",
       env: "RDB_HOST"
     },
     port: {
@@ -167,6 +167,32 @@ export const schema = convict({
       format: String,
       default: "",
       env: "RDB_NAME"
+    }
+  },
+  redis: {
+    host: {
+      doc: "Redis Host",
+      format: String,
+      default: "",
+      env: "REDIS_HOST"
+    },
+    port: {
+      doc: "Redis Port",
+      format: Number,
+      default: 6379,
+      env: "REDIS_PORT"
+    },
+    password: {
+      doc: "Redis Password",
+      format: String,
+      default: "",
+      env: "REDIS_PASSWORD"
+    },
+    database: {
+      doc: "Redis Database",
+      format: Number,
+      default: 0,
+      env: "REDIS_DATABASE"
     }
   },
   store: {
