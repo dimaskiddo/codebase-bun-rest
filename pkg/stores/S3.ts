@@ -1,4 +1,5 @@
 import * as minio from "minio"
+import s3encode from "s3encode"
 import validate from "validate.js"
 
 import * as config from "@pkg/config"
@@ -132,25 +133,22 @@ export async function getURLFilePublic(bucket: string, file: string) {
   const ctx = "store-s3-get-url-file-public"
 
   if (!validate.isEmpty(client)) {
+    file = s3encode(file)
     switch (config.schema.get("store.driver")) {
       case "aws":
-        return "https://s3-" + config.schema.get("store.region") + ".amazonaws.com/" + bucket + "/" +
-               file.replace(/ /g, "+")
+        return "https://s3." + config.schema.get("store.region") + ".amazonaws.com/" + bucket + "/" + file
 
         case "oss":
-        return "https://" + bucket + ".oss-" + config.schema.get("store.region") + ".aliyuncs.com/" +
-                file.replace(/ /g, "+")
+        return "https://" + bucket + ".oss-" + config.schema.get("store.region") + ".aliyuncs.com/" + file
         
       case "stroeio":
       case "minio":
         let protocol = "http://"
-
         if (config.schema.get("store.useSSL")) {
           protocol = "https://"
         }
 
-        return protocol + config.schema.get("store.endpoint") + "/" + bucket + "/" +
-               file.replace(/ /g, "+")
+        return protocol + config.schema.get("store.endpoint") + "/" + bucket + "/" + file
     }
   } else {
     log.error(ctx, "Store Client is Uninitialized")
