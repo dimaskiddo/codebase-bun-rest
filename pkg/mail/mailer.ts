@@ -33,33 +33,38 @@ export async function connect() {
   }
 }
 
-export async function send(to: string, subject: string, message: string, msgIsHtml: boolean = false, attachments: [] = []) {
+export async function send(to: string, subject: string, message: string, attachments: [] = [], msgIsHtml: boolean = false,) {
   const ctx = "mail-mailer-send"
 
   if (validate.isEmpty(config.schema.get("mail.service"))) {
+    const mailOpts: mailer.SendMailOptions = {
+      to: to,
+      from: "\"" + config.schema.get("mail.sender") + "\" <" + config.schema.get("mail.username") + ">",
+      subject: subject,
+      attachments: attachments
+    }
+
+    const mailHtmlOpts: mailer.SendMailOptions = {
+      ...mailOpts,
+      html: message
+    }
+
+    const mailTextOpts: mailer.SendMailOptions = {
+      ...mailOpts,
+      text: message
+    }
+
     try {
       switch (msgIsHtml) {
         case true:
-          await client.sendMail({
-            from: "\""+ config.schema.get("mail.sender") +"\" " + config.schema.get("mail.username"),
-            to: to,
-            subject: subject,
-            html: message,
-            attachments: attachments
-          })
+          await client.sendMail(mailHtmlOpts)
           break        
         default:
-          await client.sendMail({
-            from: "\""+ config.schema.get("mail.sender") +"\" " + config.schema.get("mail.username"),
-            to: to,
-            subject: subject,
-            text: message,
-            attachments: attachments
-          })
+          await client.sendMail(mailTextOpts)
           break
       }
 
-      log.info(ctx, "Successfully to Send Email for \"" + to + "\"")
+      log.info(ctx, "Successfully Send Email to \"" + to + "\"")
     } catch(err: any) {
       log.error(ctx, "Failed to Send Email for \"" + to + "\". Caused by " + string.strToTitleCase(err.message))
     }

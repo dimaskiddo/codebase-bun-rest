@@ -70,7 +70,7 @@ export async function upload(bucket: string, file: string, path: string) {
 
       let isUploaded = await client.fPutObject(bucket, string.strSpaceToUnderscore(file), path)
       if (isUploaded) {
-        log.info(ctx, "Successfully Uploading File \""+ file + "\"")
+        log.info(ctx, "Successfully Upload File \""+ file + "\"")
         return true
       }
 
