@@ -81,7 +81,7 @@ export async function query(statement: string, data: {} | null = null) {
 
       return recordSet
     } catch(err: any) {
-      log.error(ctx, string.strToTitleCase(err.message))
+      log.error(ctx, "Failed to Query to MySQL Database Caused By " + string.strToTitleCase(err.message))
     }
   } else {
     log.error(ctx, "MySQL Client is Uninitialized")

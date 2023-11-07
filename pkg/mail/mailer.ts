@@ -75,7 +75,7 @@ export async function send(to: string, subject: string, message: string, attachm
 
       log.info(ctx, "Successfully Send Email to \"" + to + "\"")
     } catch(err: any) {
-      log.error(ctx, "Failed to Send Email for \"" + to + "\". Caused by " + string.strToTitleCase(err.message))
+      log.error(ctx, "Failed to Send Email to \"" + to + "\" Caused by " + string.strToTitleCase(err.message))
     }
   }
 

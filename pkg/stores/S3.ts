@@ -73,10 +73,8 @@ export async function upload(bucket: string, file: string, path: string) {
         log.info(ctx, "Successfully Upload File \""+ file + "\"")
         return true
       }
-
-      log.error(ctx, "Failed to Upload File \""+ file + "\"")
     } catch(err: any) {
-      log.error(ctx, string.strToTitleCase(err.message))
+      log.error(ctx, "Failed to Upload File \""+ file + "\" Caused By " +string.strToTitleCase(err.message))
     }
   } else {
     log.error(ctx, "Store Client is Uninitialized")
@@ -92,7 +90,7 @@ export async function remove(bucket: string, file: string) {
     try {
       let isBucketExist = await client.bucketExists(bucket)
       if (!isBucketExist) {
-        log.error(ctx, "Failed to Remove File \""+ file + "\ Caused By Bucket Doesn't Exist")
+        log.error(ctx, "Failed to Remove File \""+ file + "\" Caused By Bucket Doesn't Exist")
         return false
       }
 
@@ -101,10 +99,8 @@ export async function remove(bucket: string, file: string) {
         log.info(ctx, "Successfully Remove File \""+ file + "\"")
         return true
       }
-
-      log.error(ctx, "Failed to Remove File \""+ file + "\"")
     } catch(err: any) {
-      log.error(ctx, string.strToTitleCase(err.message))
+      log.error(ctx, "Failed to Remove File \""+ file + "\" Caused By " +string.strToTitleCase(err.message))
     }
   } else {
     log.error(ctx, "Store Client is Uninitialized")
@@ -120,7 +116,7 @@ export async function getURLFilePrivate(bucket: string, file: string) {
     try {
       return await client.presignedGetObject(bucket, file, config.schema.get("store.expired"))
     } catch(err: any) {
-      log.error(ctx, string.strToTitleCase(err.message))
+      log.error(ctx, "Failed to Get Private URL for File \""+ file + "\" Caused By " + string.strToTitleCase(err.message))
     }
   } else {
     log.error(ctx, "Store Client is Uninitialized")
