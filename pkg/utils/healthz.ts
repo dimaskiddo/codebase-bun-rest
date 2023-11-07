@@ -6,6 +6,7 @@ import * as log from "@utils/logger"
 import * as response from "@utils/response"
 
 import * as mysql from "@dbs/mysql"
+import * as redis from "@dbs/redis"
 
 export async function check(res: Response) {
   const ctx = "health-check"
@@ -21,5 +22,13 @@ export async function check(res: Response) {
       break
   }
 
-  response.resSuccess(res, "Health Check Status is OK")
+  if (config.schema.get("redis.enabled")) {
+    if (!await redis.ping()) {
+      log.error(ctx, "Failed to Ping Redis Database")
+      response.resInternalError(res, "Failed to Ping Redis Database")
+      return
+    }
+  }
+  
+  response.resSuccess(res, "Service Health Check Status is OK")
 }
