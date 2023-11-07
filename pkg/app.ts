@@ -94,7 +94,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 
 app.set("trust proxy", config.schema.get("server.proxy.trust"))
 
-const serverListen = app.listen(config.schema.get("server.port"), config.schema.get("server.address"), function () {
+const serverListen = app.listen(config.schema.get("server.port"), config.schema.get("server.address"), () => {
   log.info(ctx, "Server Started at PID " + process.pid + " Listen on " + config.schema.get("server.address") + ":" + config.schema.get("server.port"))
 })
 
