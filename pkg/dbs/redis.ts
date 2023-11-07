@@ -11,7 +11,7 @@ var client: redis.RedisClientType
 export async function connect() {
   const ctx = "db-redis-connect"
 
-  if (validate.isEmpty(config.schema.get("redis.host"))) {
+  if (validate.isEmpty(client)) {
     client = redis.createClient({
       url: "redis://" + config.schema.get("redis.host") + ":" + config.schema.get("redis.port"),
       database: config.schema.get("redis.database")
@@ -26,10 +26,9 @@ export async function connect() {
 export async function ping() {
   const ctx = "db-redis-ping"
 
-  if (validate.isEmpty(config.schema.get("redis.host"))) {
+  if (!validate.isEmpty(client)) {
     try {
-      let status: boolean = await client.ping().then(() => true)
-      return status
+      return await client.ping().then(() => true).catch(() => false)
     } catch(err: any) {
       log.error(ctx, "Failed to Ping Redis Database")
     }
@@ -43,7 +42,7 @@ export async function ping() {
 export async function close() {
   const ctx = "db-redis-close"
 
-  if (validate.isEmpty(config.schema.get("redis.host"))) {
+  if (!validate.isEmpty(client)) {
     try {
       await client.quit()
     } catch(err: any) {

@@ -4,7 +4,6 @@ import cors from "cors"
 import helmet from "helmet"
 import cookieparser from "cookie-parser"
 import expressua from "express-useragent"
-import validate from "validate.js"
 
 import * as config from "@pkg/config"
 import * as routes from "@pkg/routes"
@@ -31,7 +30,7 @@ switch (config.schema.get("rdb.driver")) {
     break
 }
 
-if (validate.isEmpty(config.schema.get("redis.host"))) {
+if (config.schema.get("redis.enabled")) {
   await redis.connect()
 }
 
@@ -44,15 +43,10 @@ switch (config.schema.get("store.driver")) {
     break
 }
 
-if (validate.isEmpty(config.schema.get("mail.service"))) {
+if (config.schema.get("mail.enabled")) {
   await mailer.connect()
 }
 
-app.use(cors({
-  origin: config.schema.get("server.cors.origins"),
-  methods: config.schema.get("server.cors.methods"),
-  allowedHeaders: config.schema.get("server.cors.headers")
-}))
 app.use(helmet())
 app.use(cookieparser())
 app.use(multer.cache.any())
@@ -62,6 +56,11 @@ app.use(express.urlencoded({
   limit: config.schema.get("server.upload.limit") + "mb"
 }))
 app.use(expressua.express())
+app.use(cors({
+  origin: config.schema.get("server.cors.origins"),
+  methods: config.schema.get("server.cors.methods"),
+  allowedHeaders: config.schema.get("server.cors.headers")
+}))
 app.use((req: Request, res: Response, next: NextFunction) => {
   if (req.url !== "/favicon.ico") {
     const logData = {
@@ -72,7 +71,6 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
     log.info(ctx, logData)
   }
-
   next()
 })
 
@@ -122,7 +120,7 @@ async function serverShutdown() {
       break
   }
 
-  if (validate.isEmpty(config.schema.get("redis.host"))) {
+  if (config.schema.get("redis.enabled")) {
     await redis.close()
   }
   

@@ -141,7 +141,7 @@ export const schema = convict({
     host: {
       doc: "Relational Database Host",
       format: String,
-      default: "",
+      default: "127.0.0.1",
       env: "RDB_HOST"
     },
     port: {
@@ -170,10 +170,16 @@ export const schema = convict({
     }
   },
   redis: {
+    enabled: {
+      doc: "Redis Enabled",
+      format: Boolean,
+      default: false,
+      env: "REDIS_ENABLED"
+    },
     host: {
       doc: "Redis Host",
       format: String,
-      default: "",
+      default: "127.0.0.1",
       env: "REDIS_HOST"
     },
     port: {
@@ -260,41 +266,47 @@ export const schema = convict({
     }
   },
   mail: {
+    enabled: {
+      doc: "Mail Enabled",
+      format: Boolean,
+      default: false,
+      env: "MAIL_ENABLED"
+    },
     service: {
-      doc: "Mail Service Provider",
+      doc: "Mail Service",
       format: String,
       default: "",
       env: "MAIL_SERVICE"
     },
-    host: {
-      doc: "Mail Service Host",
+    sender: {
+      doc: "Mail Sender Name",
       format: String,
       default: "",
-      env: "MAIL_HOST"
-    },
-    port: {
-      doc: "Mail Service Port",
-      format: Number,
-      default: 465,
-      env: "MAIL_PORT"
+      env: "MAIL_SENDER_NAME"
     },
     username: {
-      doc: "Mail Service Username",
+      doc: "Mail Username",
       format: String,
       default: "",
       env: "MAIL_USERNAME"
     },
     password: {
-      doc: "Mail Service Password",
+      doc: "Mail Password",
       format: String,
       default: "",
       env: "MAIL_PASSWORD"
     },
-    sender: {
-      doc: "Mail Service Sender",
+    host: {
+      doc: "Mail Host",
       format: String,
       default: "",
-      env: "MAIL_SENDER"
+      env: "MAIL_HOST"
+    },
+    port: {
+      doc: "Mail Port",
+      format: Number,
+      default: 465,
+      env: "MAIL_PORT"
     }
   }
 })
