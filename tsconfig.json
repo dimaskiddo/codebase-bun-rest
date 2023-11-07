@@ -23,6 +23,7 @@
       "@pkg/json": ["./package.json"],
       "@auth/*": ["./pkg/auth/*"],
       "@dbs/*": ["./pkg/dbs/*"],
+      "@mail/*": ["./pkg/mail/*"],
       "@stores/*": ["./pkg/stores/*"],
       "@utils/*": ["./pkg/utils/*"],
       "@modules/*": ["./modules/*"]

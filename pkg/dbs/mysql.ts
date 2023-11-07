@@ -15,7 +15,7 @@ export async function connect() {
     client = mysql.createPool({
       host: config.schema.get("rdb.host"),
       port: config.schema.get("rdb.port"),
-      user: config.schema.get("rdb.user"),
+      user: config.schema.get("rdb.username"),
       password: config.schema.get("rdb.password"),
       database: config.schema.get("rdb.name")
     })

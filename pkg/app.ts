@@ -3,6 +3,7 @@ import express, { Request, Response, NextFunction } from "express"
 import helmet from "helmet"
 import cookieparser from "cookie-parser"
 import expressua from "express-useragent"
+import validate from "validate.js"
 
 import * as config from "@pkg/config"
 import * as routes from "@pkg/routes"
@@ -12,6 +13,8 @@ import * as string from "@utils/string"
 import * as response from "@utils/response"
 
 import * as mysql from "@dbs/mysql"
+
+import * as mailer from "@mail/mailer"
 
 import * as multer from "@stores/multer"
 import * as S3 from "@stores/S3"
@@ -33,6 +36,10 @@ switch (config.schema.get("store.driver")) {
   case "minio":
     await S3.connect()
     break
+}
+
+if (validate.isEmpty(config.schema.get("mail.service"))) {
+  await mailer.connect()
 }
 
 app.use(helmet())

@@ -40,20 +40,20 @@ export const schema = convict({
       default: 3000,
       env: "SERVER_PORT"
     },
-    proxy: {
-      trust: {
-        doc: "The Application Proxy Trust Configuration",
-        format: Boolean,
-        default: true,
-        env: "SERVER_PROXY_TRUST"
-      }
-    },
     router: {
       path: {
         doc: "The Application Base Path URL",
         format: String,
         default: "/",
         env: "SERVER_ROUTER_PATH"
+      }
+    },
+    proxy: {
+      trust: {
+        doc: "The Application Proxy Trust Configuration",
+        format: Boolean,
+        default: true,
+        env: "SERVER_PROXY_TRUST"
       }
     },
     upload: {
@@ -150,11 +150,11 @@ export const schema = convict({
       default: 3306,
       env: "RDB_PORT"
     },
-    user: {
-      doc: "Relational Database User",
+    username: {
+      doc: "Relational Database Username",
       format: String,
       default: "",
-      env: "RDB_USER"
+      env: "RDB_USERNAME"
     },
     password: {
       doc: "Relational Database Password",
@@ -168,7 +168,7 @@ export const schema = convict({
       default: "",
       env: "RDB_NAME"
     }
-  },  
+  },
   store: {
     driver: {
       doc: "Storage Driver",
@@ -232,7 +232,45 @@ export const schema = convict({
       default: 86400,
       env: "STORE_URL_EXPIRED"
     }
-  }  
+  },
+  mail: {
+    service: {
+      doc: "Mail Service Provider",
+      format: String,
+      default: "",
+      env: "MAIL_SERVICE"
+    },
+    host: {
+      doc: "Mail Service Host",
+      format: String,
+      default: "",
+      env: "MAIL_HOST"
+    },
+    port: {
+      doc: "Mail Service Port",
+      format: Number,
+      default: 465,
+      env: "MAIL_PORT"
+    },
+    username: {
+      doc: "Mail Service Username",
+      format: String,
+      default: "",
+      env: "MAIL_USERNAME"
+    },
+    password: {
+      doc: "Mail Service Password",
+      format: String,
+      default: "",
+      env: "MAIL_PASSWORD"
+    },
+    sender: {
+      doc: "Mail Service Sender",
+      format: String,
+      default: "",
+      env: "MAIL_SENDER"
+    }
+  }
 })
 
 schema.validate({allowed: "strict"})
