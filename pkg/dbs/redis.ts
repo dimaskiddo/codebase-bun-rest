@@ -135,6 +135,36 @@ export async function deleteKey(key: string) {
   return false
 }
 
+export async function publish(channel: string, message: string) {
+  const ctx = "db-redis-publish"
+
+  if (!validate.isEmpty(client)) {
+    try {
+      return await client.publish(channel, message).then(() => true)
+    } catch(err: any) {
+      log.error(ctx, "Failed to Publish Message to Redis Channel Caused By " + string.strToTitleCase(err.message))
+    }
+  } else {
+    log.error(ctx, "Redis Client is Uninitialized")
+  }
+
+  return false
+}
+
+export async function subscribe(channel: string, handler: any) {
+  const ctx = "db-redis-subscribe"
+
+  if (!validate.isEmpty(client)) {
+    try {
+      await client.subscribe(channel, handler)
+    } catch(err: any) {
+      log.error(ctx, "Failed to Subscribe Message from Redis Channel Caused By " + string.strToTitleCase(err.message))
+    }
+  } else {
+    log.error(ctx, "Redis Client is Uninitialized")
+  }
+}
+
 export async function close() {
   const ctx = "db-redis-close"
 
