@@ -28,7 +28,8 @@ export async function ping() {
 
   if (!validate.isEmpty(client)) {
     try {
-      return await client.ping().then(() => true)
+      await client.ping()
+      return true
     } catch(err: any) {
       log.error(ctx, "Failed to Ping Redis Database")
     }
@@ -92,7 +93,8 @@ export async function setKey(key: string, value: string) {
 
   if (!validate.isEmpty(client)) {
     try {
-      return await client.set(key, value).then(() => true)
+      await client.set(key, value)
+      return true
     } catch(err: any) {
       log.error(ctx, "Failed to Set Key to Redis Database Caused By " + string.strToTitleCase(err.message))
     }    
@@ -108,7 +110,8 @@ export async function setKeyExpired(key: string, value: string, expired: number)
 
   if (!validate.isEmpty(client)) {
     try {
-      return await client.setEx(key, expired, value).then(() => true)
+      await client.setEx(key, expired, value)
+      return true
     } catch(err: any) {
       log.error(ctx, "Failed to Set Key with Expiration Time to Redis Database Caused By " + string.strToTitleCase(err.message))
     }
@@ -124,7 +127,8 @@ export async function deleteKey(key: string) {
 
   if (!validate.isEmpty(client)) {
     try {
-      return await client.del(key).then(() => true)
+      await client.del(key)
+      return true
     } catch(err: any) {
       log.error(ctx, "Failed to Delete Key from Redis Database Caused By " + string.strToTitleCase(err.message))
     }
@@ -140,7 +144,8 @@ export async function publish(channel: string, message: string) {
 
   if (!validate.isEmpty(client)) {
     try {
-      return await client.publish(channel, message).then(() => true)
+      await client.publish(channel, message)
+      return true
     } catch(err: any) {
       log.error(ctx, "Failed to Publish Message to Redis Channel Caused By " + string.strToTitleCase(err.message))
     }

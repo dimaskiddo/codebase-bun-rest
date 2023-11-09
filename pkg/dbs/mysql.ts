@@ -31,7 +31,7 @@ export async function ping() {
   
   if (!validate.isEmpty(client)) {
     try {
-      let status: boolean = await new Promise((resolve, reject) => {
+      let status = await new Promise<boolean>((resolve, reject) => {
         client.getConnection((err, conn) => {
           if (err) {
             if (conn) conn.release()
@@ -63,7 +63,7 @@ export async function query(statement: string, data: {} | null = null) {
 
   if (!validate.isEmpty(client)) {
     try {
-      let recordSet: mysql.Query = await new Promise((resolve, reject) => {
+      let recordSet = await new Promise<mysql.Query>((resolve, reject) => {
         client.getConnection((err, conn) => {
           if (err) {
             if (conn) conn.release()
@@ -95,7 +95,7 @@ export async function close() {
 
   if (!validate.isEmpty(client)) {
     try {
-      let status: boolean = await new Promise((resolve, reject) => {
+      let status = await new Promise<boolean>((resolve, reject) => {
         client.end((err) => {
           if (err) reject(err)
         })
