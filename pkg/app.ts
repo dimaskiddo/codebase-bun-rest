@@ -128,27 +128,11 @@ async function serverShutdown() {
   process.exit(0)
 }
 
-process.on("SIGUSR1", () => {
-  console.log("")
-  log.info(ctx, "Server Shutdown Caused by Signal SIGUSR1")
-
-  serverShutdown()
-})
-process.on("SIGINT", () => {
-  console.log("")
-  log.info(ctx, "Server Shutdown Caused by Signal SIGINT")
-
-  serverShutdown()
-})
-process.on("SIGTERM", () => {
-  console.log("")
-  log.info(ctx, "Server Shutdown Caused by Signal SIGTERM")
-
-  serverShutdown()
-})
-process.on("SIGKILL", () => {
-  console.log("")
-  log.info(ctx, "Server Shutdown Caused by Signal SIGKILL")
-
-  serverShutdown()
+const signalShutdown = ["SIGUSR1", "SIGUSR2", "SIGINT", "SIGTERM", "SIGKILL"]
+signalShutdown.map(signal => {
+  process.once(signal, async () => {
+    console.log("")
+    log.info(ctx, "Server Shutdown Caused by Signal " + signal)
+    serverShutdown()
+  })
 })
