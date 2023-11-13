@@ -77,6 +77,9 @@ export async function connect(clientId: string, groupId: string, type: Connectio
               groupId: groupId,
               allowAutoTopicCreation: false,
               partitionAssigners: [kafka.PartitionAssigners.roundRobin],
+              retry: {
+                retries: 0
+              }
             }
 
             if (validate.isEmpty(consumer.get(clientId))) {
@@ -87,6 +90,15 @@ export async function connect(clientId: string, groupId: string, type: Connectio
         }
       } catch(err: any) {
         log.error(ctx, "[" + clientId + "] Failed to Connect Kafka Queue")
+
+        switch (type) {
+          case "producer":
+            producer.get(clientId)?.disconnect()
+            break
+          case "consumer":
+            consumer.get(clientId)?.disconnect()
+            break
+        }
       }
     }
   }
@@ -133,19 +145,22 @@ export async function consume(clientId: string, topic: string, callback: (messag
           autoCommit: false,
           eachMessage: async ({topic: cTopic, partition: cPartition, message: cMessage, heartbeat: cHeartbeat}) => {
             if (cTopic === topic) {
-              let message = cMessage.value ? cMessage.value.toString() : ""
-
-              let isProcessed = await callback(message).then(() => true)
-              if (isProcessed) {
-                await consumer.get(clientId)?.commitOffsets([{
-                  topic: cTopic,
-                  partition: cPartition,
-                  offset: cMessage.offset + 1
-                }])
-                log.info(ctx, "[" + clientId + "] Successfully Consume Message with Topic \""+ cTopic +"\" in Partition " + cPartition.toString() + " from Kafka Queue")
+              let message = cMessage.value?.toString() || ""
+              try {
+                let isProcessed = await callback(message).then(() => true)
+                if (isProcessed) {
+                  await consumer.get(clientId)?.commitOffsets([{
+                    topic: cTopic,
+                    partition: cPartition,
+                    offset: cMessage.offset + 1
+                  }])
+                  log.info(ctx, "[" + clientId + "] Successfully Consume Message with Topic \""+ cTopic +"\" in Partition " + cPartition.toString() + " from Kafka Queue")
+                }
+              } catch(err: any) {
+                log.error(ctx, "[" + clientId + "] Failed to Consume Message from Kafka Queue Caused By " + string.strToTitleCase(err.message))
+              } finally {
+                await cHeartbeat()
               }
-
-              await cHeartbeat()
             }
           }
         })
