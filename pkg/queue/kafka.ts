@@ -108,7 +108,6 @@ export async function produce(clientId: string, topic: string, message: string) 
         return true
       } catch(err: any) {
         log.error(ctx, "[" + clientId + "] Failed to Produce Message to Kafka Queue Caused By " + string.strToTitleCase(err.message))
-        await producer.get(clientId)?.
       }
     } else {
       log.error(ctx, "[" + clientId + "] Kafka Client is Uninitialized")      
