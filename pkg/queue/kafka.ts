@@ -157,7 +157,7 @@ export async function close() {
     if (producer.has(clientId)) {
       if (!validate.isEmpty(producer.get(clientId))) {
         try {
-          await producer.get(clientId)?.disconnect()
+          await connection.disconnect()
         } catch(err: any) {
           log.error(ctx, "[" + clientId + "] Failed to Close Kafka Queue")
         }
@@ -173,7 +173,7 @@ export async function close() {
     if (consumer.has(clientId)) {
       if (!validate.isEmpty(consumer)) {
         try {
-          await consumer.get(clientId)?.disconnect()
+          await connection.disconnect()
         } catch(err: any) {
           log.error(ctx, "[" + clientId + "] Failed to Close Kafka Queue")
         }
