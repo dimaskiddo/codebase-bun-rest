@@ -108,6 +108,7 @@ export async function produce(clientId: string, topic: string, message: string) 
         return true
       } catch(err: any) {
         log.error(ctx, "[" + clientId + "] Failed to Produce Message to Kafka Queue Caused By " + string.strToTitleCase(err.message))
+        await producer.get(clientId)?.
       }
     } else {
       log.error(ctx, "[" + clientId + "] Kafka Client is Uninitialized")      
@@ -130,12 +131,20 @@ export async function consume(clientId: string, topic: string, callback: (messag
         })
 
         consumer.get(clientId)?.run({
+          autoCommit: false,
           eachMessage: async ({topic: cTopic, partition: cPartition, message: cMessage}) => {
             if (cTopic === topic) {
               let message = cMessage.value ? cMessage.value.toString() : ""
-              await callback(message)
 
-              log.info(ctx, "[" + clientId + "] Successfully Consume Message with Topic \""+ cTopic +"\" in Partition " + cPartition.toString() + " from Kafka Queue")
+              let isProcessed = await callback(message).then(() => true)
+              if (isProcessed) {
+                await consumer.get(clientId)?.commitOffsets([{
+                  topic: cTopic,
+                  partition: cPartition,
+                  offset: cMessage.offset
+                }])                
+                log.info(ctx, "[" + clientId + "] Successfully Consume Message with Topic \""+ cTopic +"\" in Partition " + cPartition.toString() + " from Kafka Queue")
+              }
             }
           }
         })
