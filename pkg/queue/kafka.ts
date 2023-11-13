@@ -76,7 +76,7 @@ export async function connect(clientId: string, groupId: string, type: Connectio
             let consumerOpts: kafka.ConsumerConfig = {
               groupId: groupId,
               allowAutoTopicCreation: false,
-              partitionAssigners: [kafka.PartitionAssigners.roundRobin]
+              partitionAssigners: [kafka.PartitionAssigners.roundRobin],
             }
 
             if (validate.isEmpty(consumer.get(clientId))) {
@@ -131,7 +131,7 @@ export async function consume(clientId: string, topic: string, callback: (messag
 
         consumer.get(clientId)?.run({
           autoCommit: false,
-          eachMessage: async ({topic: cTopic, partition: cPartition, message: cMessage}) => {
+          eachMessage: async ({topic: cTopic, partition: cPartition, message: cMessage, heartbeat: cHeartbeat}) => {
             if (cTopic === topic) {
               let message = cMessage.value ? cMessage.value.toString() : ""
 
@@ -141,9 +141,11 @@ export async function consume(clientId: string, topic: string, callback: (messag
                   topic: cTopic,
                   partition: cPartition,
                   offset: cMessage.offset + 1
-                }])                
+                }])
                 log.info(ctx, "[" + clientId + "] Successfully Consume Message with Topic \""+ cTopic +"\" in Partition " + cPartition.toString() + " from Kafka Queue")
               }
+
+              await cHeartbeat()
             }
           }
         })
