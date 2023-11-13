@@ -149,7 +149,7 @@ export async function publish(channel: string, message: string) {
       await client.publish(channel, message)
       return true
     } catch(err: any) {
-      log.error(ctx, "Failed to Publish Message to Redis Channel Caused By " + string.strToTitleCase(err.message))
+      log.error(ctx, "Failed to Publish Message with Channel \"" + channel + "\" to Redis Database Caused By " + string.strToTitleCase(err.message))
     }
   } else {
     log.error(ctx, "Redis Client is Uninitialized")
@@ -158,14 +158,17 @@ export async function publish(channel: string, message: string) {
   return false
 }
 
-export async function subscribe(channel: string, handler: any) {
+export async function subscribe(channel: string, callback: (message: string) => Promise<void>) {
   const ctx = "db-redis-subscribe"
 
   if (!validate.isEmpty(client)) {
     try {
-      await client.subscribe(channel, handler)
+      await client.subscribe(channel, async (message, channel) => {
+        await callback(message)
+        log.info(ctx, "Successfully Subscribe Message with Channel \"" + channel + "\" from Redis Database")
+      })
     } catch(err: any) {
-      log.error(ctx, "Failed to Subscribe Message from Redis Channel Caused By " + string.strToTitleCase(err.message))
+      log.error(ctx, "Failed to Subscribe Message with Channel \"" + channel + "\" from Redis Database Caused By " + string.strToTitleCase(err.message))
     }
   } else {
     log.error(ctx, "Redis Client is Uninitialized")
