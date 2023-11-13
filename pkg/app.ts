@@ -17,6 +17,8 @@ import * as redis from "@dbs/redis"
 
 import * as mailer from "@mail/mailer"
 
+import * as kafka from "@queue/kafka"
+
 import * as multer from "@stores/multer"
 import * as S3 from "@stores/S3"
 
@@ -122,6 +124,10 @@ async function serverShutdown() {
 
   if (config.schema.get("redis.enabled")) {
     await redis.close()
+  }
+
+  if (config.schema.get("kafka.enabled")) {
+    await kafka.close()
   }
   
   log.info(ctx, "Server Shutdown Gracefully")

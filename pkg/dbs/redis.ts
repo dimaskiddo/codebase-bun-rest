@@ -11,14 +11,16 @@ var client: redis.RedisClientType
 export async function connect() {
   const ctx = "db-redis-connect"
 
-  if (validate.isEmpty(client)) {
-    client = redis.createClient({
-      url: "redis://" + config.schema.get("redis.host") + ":" + config.schema.get("redis.port"),
-      database: config.schema.get("redis.database")
-    })
+  if (config.schema.get("redis.enabled")) {
+    if (validate.isEmpty(client)) {
+      client = redis.createClient({
+        url: "redis://" + config.schema.get("redis.host") + ":" + config.schema.get("redis.port"),
+        database: config.schema.get("redis.database")
+      })
 
-    if (!await ping()) {
-      log.error(ctx, "Failed to Connect Redis Database")
+      if (!await ping()) {
+        log.error(ctx, "Failed to Connect Redis Database")
+      }
     }
   }
 }

@@ -201,6 +201,44 @@ export const schema = convict({
       env: "REDIS_DATABASE"
     }
   },
+  kafka: {
+    enabled: {
+      doc: "Kafka Enabled",
+      format: Boolean,
+      default: false,
+      env: "KAFKA_ENABLED"
+    },
+    host: {
+      doc: "Kafka Host",
+      format: Array,
+      default: ["127.0.0.1:9092"],
+      env: "KAFKA_HOST"
+    },
+    ssl: {
+      doc: "Kafka Use SSL",
+      format: Boolean,
+      default: false,
+      env: "KAFKA_USE_SSL"
+    },
+    username: {
+      doc: "Kafka Username",
+      format: String,
+      default: "",
+      env: "KAFKA_USERNAME"
+    },
+    password: {
+      doc: "Kafka Password",
+      format: String,
+      default: "",
+      env: "KAFKA_PASSWORD"
+    },
+    mechanism: {
+      doc: "Kafka Mechanism",
+      format: String,
+      default: "",
+      env: "KAFKA_MECHANISM"
+    }
+  },
   store: {
     driver: {
       doc: "Storage Driver",
@@ -252,7 +290,7 @@ export const schema = convict({
       default: 443,
       env: "STORE_PORT"
     },
-    useSSL: {
+    ssl: {
       doc: "Storage Use SSL",
       format: Boolean,
       default: true,

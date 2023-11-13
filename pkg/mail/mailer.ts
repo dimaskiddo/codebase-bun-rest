@@ -9,35 +9,37 @@ import * as string from "@utils/string"
 var client: mailer.Transporter
 
 export async function connect() {
-  if (validate.isEmpty(client)) {
-    if (!validate.isEmpty(config.schema.get("mail.service"))) {
-      client = mailer.createTransport({
-        service: config.schema.get("mail.service"),
-        auth: {
-          user: config.schema.get("mail.username"),
-          pass: config.schema.get("mail.password")
-        }  
-      })
-    } else if (!validate.isEmpty(config.schema.get("mail.host"))) {
-      let isSecure = false
-      switch (config.schema.get("mail.port")) {
-        case 465:
-          isSecure = true
-          break
-        case 587:
-          isSecure = true
-          break
-      }
+  if (config.schema.get("mail.enabled")) {
+    if (validate.isEmpty(client)) {
+      if (!validate.isEmpty(config.schema.get("mail.service"))) {
+        client = mailer.createTransport({
+          service: config.schema.get("mail.service"),
+          auth: {
+            user: config.schema.get("mail.username"),
+            pass: config.schema.get("mail.password")
+          }  
+        })
+      } else if (!validate.isEmpty(config.schema.get("mail.host"))) {
+        let isSecure = false
+        switch (config.schema.get("mail.port")) {
+          case 465:
+            isSecure = true
+            break
+          case 587:
+            isSecure = true
+            break
+        }
 
-      client = mailer.createTransport({
-        host: config.schema.get("mail.host"),
-        port: config.schema.get("mail.port"),
-        auth: {
-          user: config.schema.get("mail.username"),
-          pass: config.schema.get("mail.password")
-        },
-        secure: isSecure,
-      })
+        client = mailer.createTransport({
+          host: config.schema.get("mail.host"),
+          port: config.schema.get("mail.port"),
+          auth: {
+            user: config.schema.get("mail.username"),
+            pass: config.schema.get("mail.password")
+          },
+          secure: isSecure,
+        })
+      }
     }
   }
 }

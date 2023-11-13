@@ -44,7 +44,7 @@ export async function connect() {
           secretKey: config.schema.get("store.secretkey"),
           region: config.schema.get("store.region"),
           port: config.schema.get("store.port"),
-          useSSL: config.schema.get("store.useSSL"),
+          useSSL: config.schema.get("store.ssl"),
           pathStyle: true
         })
         break
@@ -140,7 +140,7 @@ export async function getURLFilePublic(bucket: string, file: string) {
       case "stroeio":
       case "minio":
         let protocol = "http://"
-        if (config.schema.get("store.useSSL")) {
+        if (config.schema.get("store.ssl")) {
           protocol = "https://"
         }
 
