@@ -140,7 +140,7 @@ export async function consume(clientId: string, topic: string, callback: (messag
                 await consumer.get(clientId)?.commitOffsets([{
                   topic: cTopic,
                   partition: cPartition,
-                  offset: cMessage.offset
+                  offset: cMessage.offset + 1
                 }])                
                 log.info(ctx, "[" + clientId + "] Successfully Consume Message with Topic \""+ cTopic +"\" in Partition " + cPartition.toString() + " from Kafka Queue")
               }
