@@ -12,7 +12,7 @@ enum ConnectionType {
 }
 
 var producer: Map<string, kafka.Producer>
-export var consumer: Map<string, kafka.Consumer>
+var consumer: Map<string, kafka.Consumer>
 
 export async function connect(clientId: string, groupId: string, type: ConnectionType) {
   const ctx = "queue-kafka-connect"
@@ -92,8 +92,8 @@ export async function connect(clientId: string, groupId: string, type: Connectio
   }
 }
 
-export async function send(clientId: string, topic: string, data: string) {
-  const ctx = "queue-kafka-send"
+export async function produce(clientId: string, topic: string, message: string) {
+  const ctx = "queue-kafka-produce"
 
   if (producer.has(clientId)) {
     if (!validate.isEmpty(producer.get(clientId))) {
@@ -102,12 +102,12 @@ export async function send(clientId: string, topic: string, data: string) {
           topic: topic,
           compression: kafka.CompressionTypes.Snappy,
           messages: [{
-            value: data
+            value: message
           }]
         })
         return true
       } catch(err: any) {
-        log.error(ctx, "[" + clientId + "] Failed to Send Message to Kafka Queue Caused By " + string.strToTitleCase(err.message))
+        log.error(ctx, "[" + clientId + "] Failed to Produce Message to Kafka Queue Caused By " + string.strToTitleCase(err.message))
       }
     } else {
       log.error(ctx, "[" + clientId + "] Kafka Client is Uninitialized")      
@@ -117,6 +117,37 @@ export async function send(clientId: string, topic: string, data: string) {
   }
 
   return false
+}
+
+export async function consume(clientId: string, topic: string, callback: (message: string) => Promise<void>) {
+  const ctx = "queue-kafka-consume"
+
+  if (consumer.has(clientId)) {
+    if (!validate.isEmpty(consumer.get(clientId))) {
+      try {
+        consumer.get(clientId)?.subscribe({
+          topic: topic
+        })
+
+        consumer.get(clientId)?.run({
+          eachMessage: async ({topic: cTopic, partition: cPartition, message: cMessage}) => {
+            if (cTopic === topic) {
+              let message = cMessage.value ? cMessage.value.toString() : ""
+              await callback(message)
+
+              log.info(ctx, "[" + clientId + "] Successfully Consume Message with Topic \""+ cTopic +"\" in Partition " + cPartition.toString() + " from Kafka Queue")
+            }
+          }
+        })
+      } catch(err: any) {
+        log.error(ctx, "[" + clientId + "] Failed to Consume Message from Kafka Queue Caused By " + string.strToTitleCase(err.message))
+      }
+    } else {
+      log.error(ctx, "[" + clientId + "] Kafka Client is Uninitialized")      
+    }
+  } else {
+    log.error(ctx, "[" + clientId + "] Kafka Client Not Found")
+  }
 }
 
 export async function close() {
