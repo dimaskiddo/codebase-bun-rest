@@ -69,7 +69,7 @@ export async function connect(clientId: string, groupId: string, type: Connectio
 
             if (validate.isEmpty(producer.get(clientId))) {
               producer.set(clientId, new kafka.Kafka(kafkaOpts).producer(producerOpts))
-              producer.get(clientId)?.connect()
+              await producer.get(clientId)?.connect()
             }
             break      
           case "consumer":
@@ -84,7 +84,7 @@ export async function connect(clientId: string, groupId: string, type: Connectio
 
             if (validate.isEmpty(consumer.get(clientId))) {
               consumer.set(clientId, new kafka.Kafka(kafkaOpts).consumer(consumerOpts))
-              consumer.get(clientId)?.connect()
+              await consumer.get(clientId)?.connect()
             }
             break
         }
@@ -93,11 +93,11 @@ export async function connect(clientId: string, groupId: string, type: Connectio
 
         switch (type) {
           case "producer":
-            producer.get(clientId)?.disconnect()
+            await producer.get(clientId)?.disconnect()
             producer.delete(clientId)
             break
           case "consumer":
-            consumer.get(clientId)?.disconnect()
+            await consumer.get(clientId)?.disconnect()
             consumer.delete(clientId)
             break
         }
