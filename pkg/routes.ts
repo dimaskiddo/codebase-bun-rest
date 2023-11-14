@@ -9,7 +9,7 @@ import * as svcIndex from "@modules/index/service"
 import * as svcUsers from "@modules/users/service"
 
 export const router = Router()
-export const routerPath = config.schema.get("server.router.path").replace(/\/+$/, '');
+export const routerPath = config.schema.get("server.router.path").replace(/\/+$/, '')
 
 router.get(routerPath + "/", svcIndex.index)
 router.get(routerPath + "/health", svcIndex.health)
