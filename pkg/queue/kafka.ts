@@ -94,9 +94,11 @@ export async function connect(clientId: string, groupId: string, type: Connectio
         switch (type) {
           case "producer":
             producer.get(clientId)?.disconnect()
+            producer.delete(clientId)
             break
           case "consumer":
             consumer.get(clientId)?.disconnect()
+            consumer.delete(clientId)
             break
         }
       }
