@@ -160,9 +160,9 @@ export async function consume(clientId: string, topic: string, callback: (messag
                 }
               } catch(err: any) {
                 log.error(ctx, "[" + clientId + "] Failed to Consume Message from Kafka Queue Caused By " + string.strToTitleCase(err.message))
-              } finally {
-                await cHeartbeat()
               }
+
+              await cHeartbeat()
             }
           }
         })
